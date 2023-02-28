@@ -13,6 +13,7 @@ interface IToDo {
 }
 
 const toDoState = atom<IToDo[]>({
+  // 아래 default value type을 정해줌
   key: "toDo",
   default: [],
 });
@@ -20,8 +21,11 @@ const toDoState = atom<IToDo[]>({
 function ToDoList() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
-  const handleValid = (data: IForm) => {
-    console.log("add to do", data.toDo);
+  const handleValid = ({ toDo }: IForm) => {
+    setToDos((oldToDos) => [
+      { text: toDo, id: Date.now(), category: "TO_DO" },
+      ...oldToDos,
+    ]);
     setValue("toDo", "");
   };
   return (
@@ -37,7 +41,11 @@ function ToDoList() {
         />
         <button>Add</button>
       </form>
-      <ul></ul>
+      <ul>
+        {toDos.map((toDo) => (
+          <li key={toDo.id}>{toDo.text}</li>
+        ))}
+      </ul>
     </div>
   );
 }
