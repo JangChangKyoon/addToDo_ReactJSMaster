@@ -6,15 +6,22 @@ export enum Categories {
   "DONE" = "DONE",
 }
 
+export let defaultCategories: string[] = ["TO_DO", "DOING", "DONE"];
+
 export interface IToDo {
   text: string;
   id: number;
-  category: Categories;
+  category: string;
 }
 
-export const categoryState = atom<Categories>({
+export const categoryState = atom<string>({
   key: "category",
-  default: Categories.TO_DO,
+  default: defaultCategories[0],
+});
+
+export const categoriesState = atom<string[]>({
+  key: "categoriesState",
+  default: [...defaultCategories],
 });
 
 export const toDoState = atom<IToDo[]>({

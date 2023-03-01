@@ -15,6 +15,7 @@ function CreateToDo() {
       { text: toDo, id: Date.now(), category },
       ...oldToDos,
     ]);
+    // console.log(category);
     setValue("toDo", "");
   };
   return (

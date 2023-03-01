@@ -1,25 +1,55 @@
 import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Categories, categoryState, toDoSelector } from "../atoms";
+import {
+  Categories,
+  categoriesState,
+  categoryState,
+  toDoSelector,
+} from "../atoms";
 import CreateToDo from "./CreateToDo";
 import ToDo from "./ToDo";
 
 function ToDoList() {
   const toDos = useRecoilValue(toDoSelector);
   const [category, setCategory] = useRecoilState(categoryState);
-  const onInput = (event: React.FormEvent<HTMLSelectElement>) => {
-    setCategory(event.currentTarget.value as any);
+  const [categories, setCategories] = useRecoilState(categoriesState);
+  const onInput = (category: string) => {
+    setCategory(category);
   };
-  console.log(onInput);
+
+  const addCategory = () => {
+    const newCategory = prompt("새로운 카테고리의 이름이 무엇인가요?", "");
+
+    if (newCategory) {
+      if (categories.includes(newCategory)) {
+        alert("같은 이름의 카테고리가 이미 있어서 추가할 수 없습니다.");
+        return;
+      }
+
+      setCategories([...categories, newCategory]);
+      setCategory(newCategory);
+    }
+  };
   return (
     <div>
       <h1>To Dos</h1>
       <hr />
-      <select value={category} onInput={onInput}>
-        <option value={Categories.TO_DO}>To Do</option>
-        <option value={Categories.DOING}>Doing</option>
-        <option value={Categories.DONE}>Done</option>
-      </select>
+      <div>
+        {categories.map((availableCategory) => (
+          <div key={availableCategory}>
+            <button
+              onClick={() => onInput(availableCategory)}
+              disabled={availableCategory === category}
+            >
+              {availableCategory}
+            </button>
+          </div>
+        ))}
+        <div>
+          <button onClick={addCategory}>카테고리 추가</button>
+        </div>
+      </div>
+      <hr />
       <CreateToDo />
       {toDos?.map((toDo) => (
         <ToDo key={toDo.id} {...toDo} />
