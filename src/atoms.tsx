@@ -1,10 +1,16 @@
 import { atom, selector } from "recoil";
+import { recoilPersist } from "recoil-persist";
 
 export enum Categories {
   "TO_DO" = "TO_DO",
   "DOING" = "DOING",
   "DONE" = "DONE",
 }
+
+const { persistAtom } = recoilPersist({
+  key: "todoLocal",
+  storage: localStorage,
+});
 
 export let defaultCategories: string[] = ["TO_DO", "DOING", "DONE"];
 
@@ -22,12 +28,14 @@ export const categoryState = atom<string>({
 export const categoriesState = atom<string[]>({
   key: "categoriesState",
   default: [...defaultCategories],
+  effects_UNSTABLE: [persistAtom],
 });
 
 export const toDoState = atom<IToDo[]>({
   // 아래 default value type을 정해줌
   key: "toDo",
   default: [],
+  effects_UNSTABLE: [persistAtom],
 });
 
 export const toDoSelector = selector({
